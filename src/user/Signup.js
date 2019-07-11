@@ -5,6 +5,7 @@ class Signup extends Component {
         super()
         this.state = {
             name:"",
+            username:"",
             email: "",
             password: "",
             error: ""
@@ -17,10 +18,28 @@ class Signup extends Component {
    //-----------------------------------------------------------------------------------
     clickSubmit = event => {
         event.preventDefault()
-        const {name, email, password} = this.state;
-        const user = {name,email,password};
+        const {name, username, email, password} = this.state;
+        const user = {name,username,email,password};
         //console.log(user); state e ekliyoruz
-        fetch("http://localhost:8080/signup", {
+        this.signup(user)
+        .then(data=> {
+            if(!data.success) this.setState({error:data.message}); // {"success":false,"message":" Email önceden var! "}
+            else 
+               this.setState({
+                // clear state
+                name:"",
+                username: "",
+                email: "",
+                password: "",
+                error: ""
+            });
+        });
+
+    };
+
+    //------------------------------------------------------------------------------
+    signup = user => {
+        return fetch("http://localhost:8080/signup", {
             method: "POST",
             headers:{
                 Accept:"application/json",
@@ -29,26 +48,35 @@ class Signup extends Component {
             body:JSON.stringify(user)
          })
          .then(response=> {
-             return response.json()
+             return response.json();
          })
          .catch(err=> console.log(err))
-    };
+    }
 
     //-------------------------------------------------------------------------------
 
     render() {
-        const{name, email, password}  = this.state
+        const{name,username, email, password}  = this.state
         return (
             <div className="container">
                 <h2 className="mt-5 mb-5">Signup </h2>
                 <form>
-                    <div className="form-group">
+                <div className="form-group">
                         <label className="text-muted"> Name</label>
                         <input 
                         onChange={this.handleChange("name")} 
                         type="text" 
                         className="form-control" 
                         value={name} />
+
+                    </div>
+                    <div className="form-group">
+                        <label className="text-muted"> UserName</label>
+                        <input 
+                        onChange={this.handleChange("username")} 
+                        type="text" 
+                        className="form-control" 
+                        value={username} />
 
                     </div>
                     <div className="form-group">
