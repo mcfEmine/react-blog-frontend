@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {signup} from '../auth';
-
+import {Link} from 'react-router-dom';
 
 class Signup extends Component {
     constructor() {
@@ -107,7 +107,7 @@ class Signup extends Component {
                 <div className="alert alert-danger" style={{display:error ? "" : "none"}}>{error}</div>
 
                 <div className="alert alert-info" style={{display:open ? "" : "none"}}>{error}
-                 Yeni kullanıcı başarıyla yaratıldı. Lütfen giriş yapın.
+                 Yeni kullanıcı başarıyla yaratıldı. Lütfen <Link to="/signin">Login</Link> olunuz. 
                 </div>
 
                {this.signupForm(name,username, email, password,contact)} 
