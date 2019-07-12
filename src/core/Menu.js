@@ -39,11 +39,11 @@ const Menu = ({history}) => (
 { isAuthenticated() && (
    <>
     <li className="nav-item">
-    <a className="nav-link" 
+    <span className="nav-link" 
             onClick={()=> signout(() => history.push('/') )}
             style={
                 (isActive(history,"/signup"),
-                 {cursor: "pointer", color:"#009688"})  } > Çıkış </a>
+                 {cursor: "pointer", color:"#009688"})  } > Çıkış </span>
     </li>
 
 <li className="nav-item">

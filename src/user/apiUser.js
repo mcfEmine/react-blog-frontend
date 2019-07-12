@@ -1,6 +1,6 @@
 // include helper methods
 
-export const     read = (userId, token ) => {
+export const  read = (userId, token ) => {
     return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
         method: "GET",
         headers: {
@@ -22,4 +22,19 @@ export const list = () => {
             return response.json()
         })
         .catch(err => console.log(err));
+}
+//--------------------------------------------------------------------------------
+export const remove = (userId, token ) => {
+    return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
+        method: "DELETE",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization:`${token}`
+        }
+    })
+        .then(response=> { // Promise object
+            return response.json()
+        })
+        .catch(err => console.log(err))
 }

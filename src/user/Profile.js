@@ -27,6 +27,11 @@ export class Profile extends Component {
         this.init(userId);
        
     }
+    //----------------------------------------------------------------------
+    componentWillReceiveProps(props) { // props değişirse... user değişebilir..
+        const userId = props.match.params.userId
+        this.init(userId);
+    }
     //---------------------------------------------------------------------
     render() {
         const redirectToSignin = this.state.redirectToSignin
@@ -60,7 +65,7 @@ export class Profile extends Component {
                             Edit Profile
 
                         </Link>
-                            <DeleteUser/>
+                            <DeleteUser userId={this.state.user._id}/>
                         </div>)
                     } 
 
