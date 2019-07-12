@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {signup} from '../auth';
+
 
 class Signup extends Component {
     constructor() {
@@ -24,7 +26,7 @@ class Signup extends Component {
         const {name, username, email, password,contact} = this.state;
         const user = {name,username,email,password,contact};
         //console.log(user); state e ekliyoruz
-        this.signup(user)
+        signup(user)
         .then(data=> {
             if(!data.success) this.setState({error:data.message}); // {"success":false,"message":" Email önceden var! "}
             else 
@@ -42,21 +44,7 @@ class Signup extends Component {
 
     };
 
-    //------------------------------------------------------------------------------
-    signup = user => {
-        return fetch("http://localhost:8080/signup", {
-            method: "POST",
-            headers:{
-                Accept:"application/json",
-                "Content-Type": "application/json"
-            },
-            body:JSON.stringify(user)
-         })
-         .then(response=> {
-             return response.json();
-         })
-         .catch(err=> console.log(err))
-    }
+   
     //--------------------------------------------------------------------------------
     signupForm = (name,username, email, password,contact) => (
 
