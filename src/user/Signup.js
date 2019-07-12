@@ -8,18 +8,21 @@ class Signup extends Component {
             username:"",
             email: "",
             password: "",
-            error: ""
+            error: "",
+            contact: "",
+            open: false
         }
     }
     //----------------------------------------------------------------------------------
         handleChange = (name) => event=> {
+            this.setState({error: ""});
             this.setState({[name]: event.target.value});
     }
    //-----------------------------------------------------------------------------------
     clickSubmit = event => {
         event.preventDefault()
-        const {name, username, email, password} = this.state;
-        const user = {name,username,email,password};
+        const {name, username, email, password,contact} = this.state;
+        const user = {name,username,email,password,contact};
         //console.log(user); state e ekliyoruz
         this.signup(user)
         .then(data=> {
@@ -31,7 +34,9 @@ class Signup extends Component {
                 username: "",
                 email: "",
                 password: "",
-                error: ""
+                error: "",
+                contact: "",
+                open: true  // kayıt başarılı
             });
         });
 
@@ -52,52 +57,72 @@ class Signup extends Component {
          })
          .catch(err=> console.log(err))
     }
+    //--------------------------------------------------------------------------------
+    signupForm = (name,username, email, password,contact) => (
+
+        <form>
+        <div className="form-group">
+                <label className="text-muted"> Ad</label>
+                <input 
+                onChange={this.handleChange("name")} 
+                type="text" 
+                className="form-control" 
+                value={name} />
+
+            </div>
+            <div className="form-group">
+                <label className="text-muted"> Kullanıcı Ad</label>
+                <input 
+                onChange={this.handleChange("username")} 
+                type="text" 
+                className="form-control" 
+                value={username} />
+
+            </div>
+            <div className="form-group">
+                <label className="text-muted"> E_posta</label>
+                <input  
+                onChange={this.handleChange("email")} 
+                type="email" 
+                className="form-control"
+                value={email}/>
+            </div>
+            <div className="form-group">
+                <label className="text-muted"> Şifre</label>
+                <input 
+                onChange={this.handleChange("password")} 
+                type="password" 
+                className="form-control"
+                value={password}/>
+            </div>
+            <div className="form-group">
+                <label className="text-muted"> İletişim</label>
+                <input 
+                onChange={this.handleChange("contact")} 
+                type="text" 
+                className="form-control" 
+                value={contact} />
+
+            </div>
+            <button onClick= {this.clickSubmit} className="btn btn-raised btn-primary">Üye Ol</button>
+
+        </form>
+    )
 
     //-------------------------------------------------------------------------------
 
     render() {
-        const{name,username, email, password}  = this.state
+        const{name,username, email, password,contact, error, open}  = this.state
         return (
             <div className="container">
-                <h2 className="mt-5 mb-5">Signup </h2>
-                <form>
-                <div className="form-group">
-                        <label className="text-muted"> Name</label>
-                        <input 
-                        onChange={this.handleChange("name")} 
-                        type="text" 
-                        className="form-control" 
-                        value={name} />
+                <h2 className="mt-5 mb-5">Üye Ol </h2>
+                <div className="alert alert-danger" style={{display:error ? "" : "none"}}>{error}</div>
 
-                    </div>
-                    <div className="form-group">
-                        <label className="text-muted"> UserName</label>
-                        <input 
-                        onChange={this.handleChange("username")} 
-                        type="text" 
-                        className="form-control" 
-                        value={username} />
+                <div className="alert alert-info" style={{display:open ? "" : "none"}}>{error}
+                 Yeni kullanıcı başarıyla yaratıldı. Lütfen giriş yapın.
+                </div>
 
-                    </div>
-                    <div className="form-group">
-                        <label className="text-muted"> Email</label>
-                        <input  
-                        onChange={this.handleChange("email")} 
-                        type="email" 
-                        className="form-control"
-                        value={email}/>
-                    </div>
-                    <div className="form-group">
-                        <label className="text-muted"> Password</label>
-                        <input 
-                        onChange={this.handleChange("password")} 
-                        type="password" 
-                        className="form-control"
-                        value={password}/>
-                    </div>
-                    <button onClick= {this.clickSubmit} className="btn btn-raised btn-primary">Submit</button>
-
-                </form>
+               {this.signupForm(name,username, email, password,contact)} 
             </div>
         ); 
     }
