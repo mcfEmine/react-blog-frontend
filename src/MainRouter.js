@@ -20,8 +20,6 @@ const MainRouter = () => (
             <Route exact path="/user/:userId" component={Profile}></Route>
             <Route exact path="/user/edit/:userId" component={EditProfile}></Route>
             <Route exact path="/users" component={Users}></Route>
-            
-
         </Switch>
     </div>
 )

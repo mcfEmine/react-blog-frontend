@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {signup} from '../auth';
+import {signup} from '../auth/index';
 import {Link} from 'react-router-dom';
 
 class Signup extends Component {

@@ -1,6 +1,6 @@
 // include helper methods
 
-//------------------USER'S PROFILE-----------------------------
+//------------------USER'S PROFILE------------------------------------------
 export const  read = (userId, token ) => {
     return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
         method: "GET",
@@ -15,7 +15,7 @@ export const  read = (userId, token ) => {
         })
         .catch(err => console.log(err))
 }
-//---------------------------ALL USERS------------------------------------------------
+//---------------------------ALL USERS--------------------------------------------
 export const list = () => {
     return fetch(`${process.env.REACT_APP_API_URL}/users`, {
         method: "GET" })
@@ -52,6 +52,42 @@ export const update = (userId, token, user) =>  {
     })
         .then(response=> { // Promise object
             return response.json()
+        })
+        .catch(err => console.log(err))
+}
+
+//--------------------------------------------------------------------------
+export const follow = (userId, token, followId) =>  {
+    
+    return fetch(`${process.env.REACT_APP_API_URL}/user/follow`, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization:`${token}`
+        },
+        body: JSON.stringify({userId, followId})
+    })
+        .then(response=> { 
+            return response.json();
+        })
+        .catch(err => console.log(err))
+}
+
+//------------------------------------------------------------------------------
+export const unfollow = (userId, token, unfollowId) =>  {
+    
+    return fetch(`${process.env.REACT_APP_API_URL}/user/unfollow`, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization:`${token}`
+        },
+        body: JSON.stringify({userId, unfollowId})
+    })
+        .then(response=> { 
+            return response.json();
         })
         .catch(err => console.log(err))
 }

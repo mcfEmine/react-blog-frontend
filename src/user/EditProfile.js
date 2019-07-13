@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {isAuthenticated} from '../auth';
+import {isAuthenticated} from '../auth/index';
 import {read, update} from './apiUser';
 import {Redirect} from 'react-router-dom';
+
 
 export class EditProfile extends Component {
     constructor() {
@@ -16,7 +17,6 @@ export class EditProfile extends Component {
             redirectToProfile:false
         }
     }
-    //--------------------------------------------------------------------
      //----------------------------------------------------------------------------------
      handleChange = (name) => event=> {
         this.setState({[name]: event.target.value});
@@ -24,23 +24,29 @@ export class EditProfile extends Component {
 //-----------------------------------------------------------------------------------
 clickSubmit = event => {
     event.preventDefault()
-    const {name, username, email, password,contact} = this.state;
-    
-    const user = { 
-            name,
-            username,
-            email,
-            password,
-            contact
-        };
-    //console.log(user); 
-    const userId = this.props.match.params.userId;
-    const token = isAuthenticated().token;
-    update(userId, token, user)
-    .then(data=> {
-        this.setState({redirectToProfile:true});
-    });
+    if(this.isValid()) {
+            
+        const {name, username, email, password,contact} = this.state;
+        const user = { 
+                name,
+                username,
+                email,
+                contact,
+                password: password || undefined
+            };
+        //console.log(user); 
+        const userId = this.props.match.params.userId;
+        const token = isAuthenticated().token;
 
+        update(userId, token, user) 
+        .then(data=> {
+            if(data.error) this.setState({error: data.error});
+            else 
+                this.setState({redirectToProfile:true});
+                
+        });
+
+    }
 };
     //----------------------------------------------------------------------
     init = userId => {
@@ -53,7 +59,7 @@ clickSubmit = event => {
                      email: data.email, 
                      username:data.username, 
                      contact: data.contact,
-                    error: ''
+                     error: ''
                     });
         }) 
     }
@@ -61,8 +67,38 @@ clickSubmit = event => {
     componentDidMount() {
         const userId = this.props.match.params.userId
         this.init(userId);
-       
     }
+
+    //-------------------------------------------------------------------------
+    isValid = ()=> {
+        const {name, username, email, password} = this.state
+        if(name.length === 0 ) {
+            this.setState({error: "Ad boş olamaz !"})
+            return false;
+        }
+
+        if(username.length === 0 ) {
+            this.setState({error: "Kullanıcı adı boş olamaz !"})
+            return false;
+        }
+
+        if(!/^\w+([\.-]?\w+)([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) ) {
+            this.setState({error: "E-posta geçerli değildir"});
+            return false;
+        }
+        
+        if(email.length === 0 ) {
+            this.setState({error: "E_posta boş olamaz !"})
+            return false;
+        }
+        
+        if(password.length >= 1  && password.length<=5) {
+            this.setState({error: "Password en az 6 karakter olmalı!"})
+            return false;
+        }
+        return true;
+    }
+
     //--------------------------------------------------------------------------
     signupForm = (name,username, email, contact, password) => (
 
@@ -116,15 +152,21 @@ clickSubmit = event => {
     )
     //-------------------------------------------------------------------------
     render() {
-        const{id, name, username, email, contact, password,redirectToProfile}  = this.state
-        console.log("render da  -> " , redirectToProfile);
+        const{id, name, username, email, contact, password, redirectToProfile, error}  = this.state
         if(redirectToProfile) { // go to profile page
              return <Redirect to = {`/user/${id}`}   />;
         }
 
+
+
         return (
             <div className = "container">
                  <h2 className="mt-5 mb-5">Edit Profile </h2>
+                 <div  className="alert alert-danger" 
+                    style={{display:error ? "" : "none"}}>
+                        {error}
+                </div>
+                
                  {this.signupForm(name, username, email, contact, password)}    
 
             </div>

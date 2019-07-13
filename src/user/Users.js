@@ -13,6 +13,7 @@ class Users extends Component {
 
     componentDidMount() {
         list().then(data => {
+            
             if(data.error) {
                 console.log("hata");
             }
@@ -52,15 +53,11 @@ class Users extends Component {
     </div>
     );
 //--------------------------------------------------------------------------------------------------------
-
-
     render() {
         const {users} = this.state;
-
         return (
             <div className ="container">
                 <h2 className="mt-5 mb-5">Users </h2>
-
                 {this.renderUsers(users)}
 
 

@@ -3,7 +3,7 @@
 
 import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
-import {signout, isAuthenticated} from '../auth';
+import {signout, isAuthenticated} from '../auth/index';
 
 const isActive = (history, path)=> {
     if(history.location.pathname===path) return {color:"#ff9900"}
