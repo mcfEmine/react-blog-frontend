@@ -16,11 +16,15 @@ export class Profile extends Component {
 
     init = userId => {
         const token = isAuthenticated().token;
-         read(userId, token).then(data=> {
-            // hata alabilir, redirectToSignin: true olmalı
-                 this.setState({user:data})
-        }) 
+        if(typeof token ==='undefined') {
+             this.setState({redirectToSignin:true});
+        }
+        else{
+            read(userId, token).then( data => { this.setState({user:data}) })
+        }
     }
+
+// hata alabilir, redirectToSignin: true olmalı
     //----------------------------------------------------------------------
     componentDidMount() {
         const userId = this.props.match.params.userId
@@ -35,7 +39,12 @@ export class Profile extends Component {
     //---------------------------------------------------------------------
     render() {
         const redirectToSignin = this.state.redirectToSignin
-        if(redirectToSignin) return <Redirect to="/signin"/>;
+        
+        if(redirectToSignin)  {
+
+           return <Redirect to="/signin"/>; 
+        
+        }
         return (
             <div className="container">
                 <h2 className="mt-5 mb-5">Profile</h2>
@@ -61,10 +70,16 @@ export class Profile extends Component {
                         && isAuthenticated().user._id === this.state.user._id
                         && (
                             <div className = "d-inline-block">
+                        
+                        
+                        
                         <Link className="btn btn-raised btn-success mr-5"  to = {`/user/edit/${this.state.user._id}`} >
                             Edit Profile
 
                         </Link>
+
+
+
                             <DeleteUser userId={this.state.user._id}/>
                         </div>)
                     } 

@@ -17,11 +17,11 @@ import {Redirect} from 'react-router-dom';
             remove(userId, token)
             .then(data => {
                 if(data.error) {
-                    console.log("hata -> data : " , data);
+                    console.log("hata", data.error);
                 }
                 else{
                     signout( () => {
-                        console.log(" User is deleted");
+                        console.log(" User silindi");
                         this.setState({redirect: true}); // render metodunda kontrol edeceğim..true ise go to anasayfa!
                     })
                 }
