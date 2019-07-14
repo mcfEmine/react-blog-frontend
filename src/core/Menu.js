@@ -45,15 +45,18 @@ const Menu = ({history}) => (
                 (isActive(history,"/signup"),
                  {cursor: "pointer", color:"#009688"})  } > Çıkış </span>
     </li>
+    
+    <li className="nav-item">
+      <Link  to={`/user/findpeople/${isAuthenticated().user._id}`} 
+         style={ ( isActive(history, `/user/findpeople/${isAuthenticated().user._id}`)) }
+         className="nav-link" > Find People </Link>
+    </li>
 
 <li className="nav-item">
   <Link to={`/user/${isAuthenticated().user._id}`} 
-   style={
-            (isActive(history, `/user/${isAuthenticated().user._id}`
-            )
-            ) 
-          } 
-    className="nav-link" >
+        style={(isActive(history, `/user/${isAuthenticated().user._id}`))  } 
+        className="nav-link" >
+
    {`${isAuthenticated().user.name}'s profile`} 
 
   </Link>

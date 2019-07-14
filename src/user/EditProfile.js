@@ -51,8 +51,14 @@ clickSubmit = event => {
     //----------------------------------------------------------------------
     init = userId => {
         const token = isAuthenticated().token;
-         read(userId, token).then(data=> {
-            // hata alabilir, redirectToProfile: true olmalı
+        read(userId, token).then(data=> {
+            if( typeof data === 'undefined') {
+                this.setState({redirectToProfile:true});
+            }
+            else if (data.error) {
+                this.setState({redirectToProfile:true});
+            }
+            else{
                  this.setState({
                      id: data._id, 
                      name: data.name, 
@@ -61,6 +67,7 @@ clickSubmit = event => {
                      contact: data.contact,
                      error: ''
                     });
+                }
         }) 
     }
     //----------------------------------------------------------------------

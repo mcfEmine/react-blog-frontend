@@ -5,7 +5,7 @@ import {read} from './apiUser';
 import DefaultProfile from '../images/images.png';
 import DeleteUser from './DeleteUser';
 import FollowProfileButton from './FollowProfileButton';
-
+import ProfileTabs from './ProfileTabs' ;
 
 export class Profile extends Component {
     constructor() {
@@ -53,24 +53,18 @@ clickFollowButton = callApi => {
 
     init = userId => {
         const token = isAuthenticated().token;
-        read(userId, token).then(data => {
-            if(data.error) {
+        read (userId, token).then(data => {
+            if( typeof data === 'undefined') {
                 this.setState({redirectToSignin:true});
             }
-            else{
-                let following = this.checkFollow(data)
-                this.setState({user:data, following}) ;
-                
+            else if (data.error) {
+                this.setState({redirectToSignin:true});
             }
+             else{
+                 let following = this.checkFollow(data)
+                 this.setState({user:data, following}) ;
+             }
         })
-
-
-        // if(typeof token ==='undefined') {
-        //      this.setState({redirectToSignin:true});
-        // }
-        // else{
-        //     read(userId, token).then( data => { this.setState({user:data}) })
-        // }
     }
 
 // hata alabilir, redirectToSignin: true olmalı
@@ -80,8 +74,8 @@ clickFollowButton = callApi => {
         this.init(userId);
        
     }
-    //----------------------------------------------------------------------
-    componentWillReceiveProps(props) { // props değişirse... user değişebilir..
+   //----------------------------------------------------------------------
+    componentWillReceiveProps(props) { // props daki değerler değişirse, farket
         const userId = props.match.params.userId
         this.init(userId);
     }
@@ -127,12 +121,16 @@ clickFollowButton = callApi => {
                         ) : (
 
                             <FollowProfileButton following = {this.state.following}
-                            onButtonClick = {this.clickFollowButton}
+                                onButtonClick = {this.clickFollowButton}
                             />
+                        )}
                         
-                        ) }
+               </div>
 
                </div>
+               <div className="row">
+
+               <ProfileTabs followers = {this.state.user.followers}  following = {this.state.user.following} />           
 
                </div>
             </div>
