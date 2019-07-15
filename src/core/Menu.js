@@ -55,7 +55,7 @@ const Menu = ({history}) => (
     <li className="nav-item">
       <Link  to={`/post/new/${isAuthenticated().user._id}`} 
          style={ ( isActive(history, `/post/new/${isAuthenticated().user._id}`)) }
-         className="nav-link" > Create Post </Link>
+         className="nav-link" >Post Oluşturma</Link>
     </li>
 
 

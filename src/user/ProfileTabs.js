@@ -7,7 +7,7 @@ import Users from './Users';
 
 class ProfileTabs extends Component {
     render() {
-        const  {following, followers} = this.props
+        const  {following, followers, posts} = this.props
         return (
             <div>
                <div className = "row">
@@ -66,6 +66,22 @@ class ProfileTabs extends Component {
                     <div className = "col-md-4">
                     <h3 className="text-primary">Posts</h3>    
                     <hr />
+                    {posts.map( ( (post, i) => 
+                             <div key={i}>
+
+                                    <div>
+                                        <Link to = {`/post/${post._id}`}>
+                                     
+                                             <div>
+                                                <p className = "lead">{post.title}</p>     
+                                            </div>       
+                                        </Link>
+
+                                    </div>
+
+                                
+                            </div>
+                         ) )}
                     </div>        
                </div>
                 

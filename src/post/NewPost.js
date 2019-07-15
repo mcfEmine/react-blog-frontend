@@ -12,9 +12,20 @@ export class NewPost extends Component {
            body:'',
            error:'',
            user:{},
-           loading:false
+           loading:false,
+           redirectToProfile:false,
+           chkPrivate:false
         }
+        this.onCheckChange = this.onCheckChange.bind(this);
     }
+     //----------------------------------------------------------------------------
+     onCheckChange(e) {
+        //console.log(e.target.checked);
+         this.setState({
+             [e.target.name] : e.target.checked
+         })
+    }
+
      //----------------------------------------------------------------------------------
      handleChange = name => event=> {
          this.setState({error: ""});
@@ -25,114 +36,91 @@ export class NewPost extends Component {
 //-----------------------------------------------------------------------------------
 clickSubmit = event => {
     event.preventDefault();
-
     this.setState({loading:true});
-
     if(this.isValid()) {
-
-        //const userId = this.props.match.params.userId;
         const userId = isAuthenticated().user._id;
         const token = isAuthenticated().token;
-
-        const {title, body} = this.state;
-        const postData = { 
-                title,
-                body,
-            };
-
+        const {title, body, chkPrivate} = this.state;
+        const postData = { title,body, chkPrivate};
         create(userId, token, postData) 
                 .then(data=> {
                     if(data.error) this.setState({error: data.error});
-                    else 
-                        console.log('New Post:', data);
+                    else {
+                        this.setState({
+                            loading:false,
+                            title:'',
+                            body:'',
+                            chkPrivate:false,
+                            redirectToProfile: true
+                        })
+                        
+                    } 
+                        
         });
 
     }
 };
-    // //----------------------------------------------------------------------
-    // init = userId => {
-    //     const token = isAuthenticated().token;
-    //     read(userId, token).then(data=> {
-    //         if( typeof data === 'undefined') {
-    //             this.setState({redirectToProfile:true});
-    //         }
-    //         else if (data.error) {
-    //             this.setState({redirectToProfile:true});
-    //         }
-    //         else{
-    //              this.setState({
-    //                  id: data._id, 
-    //                  name: data.name, 
-    //                  email: data.email, 
-    //                  username:data.username, 
-    //                  contact: data.contact,
-    //                  error: ''
-    //                 });
-    //             }
-    //     }) 
-    // }
-    //----------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------
     componentDidMount() {
         this.postData=new FormData();
-
         this.setState({user:isAuthenticated().user})
-
-
     }
-
     //-------------------------------------------------------------------------
     isValid = ()=> {
-
         const {title, body} = this.state;
-
         if(title.length === 0 || body.length === 0 ) {
-            this.setState({error: "Alanlara giriş yapınız !"})
+            this.setState({error: "Alanlara giriş yapınız !", loading:false})
             return false;
         }
         return true;
     }
-
     //--------------------------------------------------------------------------
-        newPostFrom = (title, body) => (
-
+        newPostFrom = (title, body,chkPrivate) => (
         <form>
-       
             <div className="form-group">
-                <label className="text-muted"> Title</label>
+                <label className="text-muted"> Başlık</label>
                 <input 
                 onChange={this.handleChange("title")} 
                 type="text" 
                 className="form-control" 
                 value={title} />
-
-            </div>
-          
-          
+             </div>
 
             <div className="form-group">
-                <label className="text-muted"> Body</label>
+                <label className="text-muted"> Içerik</label>
                 <textarea onChange = {this.handleChange("body")}
                     type="text" className="form-control"
                     value={body}>
                 </textarea>
             </div>
-            <button onClick= {this.clickSubmit} className="btn btn-raised btn-primary">Create Post</button>
+            <div> <input type="checkbox" name="chkPrivate" checked={this.state.chkPrivate} onChange={this.onCheckChange} /> Private <br/> </div>
+            
+            <button onClick= {this.clickSubmit} className="btn btn-raised btn-primary">Gönder</button>
 
         </form>
     )
+   
     //-------------------------------------------------------------------------
     render() {
-        const{title, body, user ,error, loading}  = this.state;
+        const{title, body, user ,error, loading, redirectToProfile,chkPrivate}  = this.state;
+        if(redirectToProfile) {
+            return <Redirect to={`/user/${user._id}`} />;
+        }
 
         return (
             <div className = "container">
-                 <h2 className="mt-5 mb-5">Create a new post </h2>
+                 <h2 className="mt-5 mb-5">Create Post </h2>
                  <div  className="alert alert-danger" 
                     style={{display:error ? "" : "none"}}>
                         {error}
                 </div>
-                
-                 {this.newPostFrom(title, body)}    
+                {loading ? (
+                    <div className="jumbotron text-center">
+                        <h2>Lütfen bekleyiniz..</h2>
+                    </div>
+                ) : ("")}
+
+                 {this.newPostFrom(title, body,chkPrivate)}    
 
             </div>
         )

@@ -6,6 +6,7 @@ import DefaultProfile from '../images/images.png';
 import DeleteUser from './DeleteUser';
 import FollowProfileButton from './FollowProfileButton';
 import ProfileTabs from './ProfileTabs' ;
+import {listByUser} from '../post/apiPost';
 
 export class Profile extends Component {
     constructor() {
@@ -17,7 +18,8 @@ export class Profile extends Component {
             },
             redirectToSignin: false,
             following: false, 
-            error: ""
+            error: "",
+            posts : []
         }
     } 
     //---------------------------------------------------------------------------
@@ -63,7 +65,21 @@ clickFollowButton = callApi => {
              else{
                  let following = this.checkFollow(data)
                  this.setState({user:data, following}) ;
+                 this.loadPosts(data._id)
              }
+        })
+    }
+
+    //-------------------------------------------------------------------------
+    loadPosts = userId => {
+        const token = isAuthenticated().token;
+        listByUser(userId, token).then (data => { // return posts
+            if(data.error) {
+                console.log(data.error)
+            }
+            else{
+                this.setState({posts:data});
+            }
         })
     }
 
@@ -81,7 +97,7 @@ clickFollowButton = callApi => {
     }
     //---------------------------------------------------------------------
     render() {
-        const redirectToSignin = this.state.redirectToSignin
+        const {redirectToSignin, user, posts} = this.state;
         
         if(redirectToSignin)  {
 
@@ -92,7 +108,7 @@ clickFollowButton = callApi => {
             <div className="container">
                 <h2 className="mt-5 mb-5">Profile</h2>
                <div className="row">
-               <div className="col-md-6">
+               <div className="col-md-4">
               
                <img 
                     className="card-img-top" 
@@ -101,7 +117,7 @@ clickFollowButton = callApi => {
                     objectFit:'cover' }}
                 />
                </div>
-               <div className="col-md6">
+               <div className="col-md-6">
                <div className="lead mt-2">
                     <p>Merhaba, {this.state.user.name}</p>
                     <p>E-posta: {this.state.user.email}</p>
@@ -113,6 +129,10 @@ clickFollowButton = callApi => {
                         && isAuthenticated().user._id === this.state.user._id
                         ? (
                             <div className = "d-inline-block">
+                             <Link className="btn btn-raised btn-info mr-5"  to = {`/post/new/${this.state.user._id}`} >
+                                Create Post
+                            </Link>
+
                             <Link className="btn btn-raised btn-success mr-5"  to = {`/user/edit/${this.state.user._id}`} >
                                 Edit Profile
                             </Link>
@@ -130,7 +150,11 @@ clickFollowButton = callApi => {
                </div>
                <div className="row">
 
-               <ProfileTabs followers = {this.state.user.followers}  following = {this.state.user.following} />           
+               <ProfileTabs 
+                        followers = {this.state.user.followers}  
+                        following = {this.state.user.following} 
+                        posts= {posts}
+                        />           
 
                </div>
             </div>
