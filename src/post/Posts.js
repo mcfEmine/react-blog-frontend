@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {list} from "./apiPost";
+import { isAuthenticated } from "../auth/index";
 
 class Posts extends Component {
     constructor () {
@@ -11,7 +12,8 @@ class Posts extends Component {
     }
 
     componentDidMount() {
-        list().then(data => { 
+        const token = isAuthenticated().token;
+        list(token).then(data => { 
             
             if(data.error) {
                 console.log("hata", data.error);

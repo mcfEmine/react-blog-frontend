@@ -13,9 +13,17 @@ import {Redirect} from 'react-router-dom';
              body:'',
              redirectToProfile:false,
              error:'',
-             loading:false
+             loading:false,
+             chkPrivate:false
          }
+         this.onCheckChange=this.onCheckChange.bind(this);
      } 
+     // 
+     onCheckChange(e) {
+         this.setState({
+             [e.target.name] : e.target.checked
+         })
+     }
      //-------------------------------------------------------------------------------
      init = postId => {
         singlePost(postId).then(data=> {
@@ -30,13 +38,15 @@ import {Redirect} from 'react-router-dom';
                      id: data._id, 
                      title: data.title, 
                      body: data.body,
-                     error: ''
+                     error: '',
+                     chkPrivate:data.chkPrivate
                     });
                 }
         }) 
     }
     //----------------------------------------------------------------------
     componentDidMount() {
+        
         this.postData = new FormData();
         const postId = this.props.match.params.postId;
         this.init(postId);
@@ -67,8 +77,8 @@ clickSubmit = event => {
        const postId = this.state.id
        const token = isAuthenticated().token;
 
-       const {title, body} = this.state;
-       const postData = { title,body};
+       const {title, body, chkPrivate} = this.state;
+       const postData = { title,body, chkPrivate};
 
        update(postId, token, postData) 
                .then(data=> {
@@ -88,7 +98,7 @@ clickSubmit = event => {
    }
 };
      //-----------------------------------------------------------------------   
-     editPostFrom = (title, body) => (
+     editPostFrom = (title, body, ckhPrivate) => (
         <form>
             <div className="form-group">
                 <label className="text-muted"> Başlık</label>
@@ -106,20 +116,27 @@ clickSubmit = event => {
                     value={body}>
                 </textarea>
             </div>
+            <div className="form-group">
+                <input type="checkbox" 
+                    checked={this.state.chkPrivate} 
+                    onChange = {this.handleChange("ckhPrivate")}
+                    value={ckhPrivate} />
+                Private
+            </div>
             <button onClick= {this.clickSubmit} className="btn btn-raised btn-primary">Güncelle</button>
 
         </form>
     )
      //---------------------------------------------------------------------------
     render() {
-        const {title, body, redirectToProfile} = this.state;
+        const {title, body, redirectToProfile,ckhPrivate} = this.state;
         if(redirectToProfile) {
             return <Redirect to={`/user/${isAuthenticated().user._id}`} />;
         }
         return (
           <div className="container">
                 <h2 className= "mt-5 mb-5">{title}</h2>
-                {this.editPostFrom(title, body)}
+                {this.editPostFrom(title, body,ckhPrivate)}
           </div>  
         );
     }

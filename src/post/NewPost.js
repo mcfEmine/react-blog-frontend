@@ -93,7 +93,7 @@ clickSubmit = event => {
                     value={body}>
                 </textarea>
             </div>
-            <div> <input type="checkbox" name="chkPrivate" checked={this.state.chkPrivate} onChange={this.onCheckChange} /> Private <br/> </div>
+             <div className="form-group"> <input type="checkbox" name="chkPrivate" checked={this.state.chkPrivate} onChange={this.onCheckChange} /> Private <br/> </div>
             
             <button onClick= {this.clickSubmit} className="btn btn-raised btn-primary">Gönder</button>
 
